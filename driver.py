@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 import subprocess
+import perfparser
 
 def parse_all_args():
     parser = argparse.ArgumentParser()
@@ -41,12 +42,12 @@ def main(argv):
             tasks_command = "--ntasks-per-node=" + str(ntasks)
             proc = subprocess.Popen(["sbatch",node_command, tasks_command, "./jxu_auto.sh"],stdout=subprocess.PIPE,cwd=input_dir)
             job_str = str(proc.communicate()[0])
-            job_num = job_str.split(' ')[3].replace("\n","").replace("'","").strip()
+            job_num = job_str.split(' ')[3].replace("\\n","").replace("'","")
             job_list.append(job_num)
             
     # At this point job_list is populated with the job numbers of all of our submitted jobs
     # TODO: Make another python module that we pass off the job numbers to, and that actually parses our output files
-            
+    perfparser(job_list)
 
 
 if __name__ == "__main__":
