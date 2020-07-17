@@ -1,5 +1,4 @@
 import argparse
-import numpy
 import os
 import sys
 import subprocess
@@ -9,6 +8,7 @@ def parse_all_args():
     parser.add_argument("input_dir",help="Path to the directory that contains our lmp_mpi executable, bash script, and in.* files")
     parser.add_argument("--node_list",nargs="*",type=int,default=[])
     parser.add_argument("--task_list",nargs="*",type=int,default=[])
+    #TODO: Make an option flag to possibly scale the size of the problem along with the number of clusters. Currently we keep the problem size the same always
     return parser.parse_args()
 
 
@@ -25,37 +25,27 @@ def main(argv):
     if not node_list or not task_list:
         print("Error: One of the essential lists (node_list or task_list) were not provided. Please provide a list of values to proceed")
         exit(-1)
+
+    # TODO: Possibly write this output to our aggregated output file?
     print("LAMMPS Simulation started with parameters: dir=", args.input_dir, "nodes list=", node_list, "tasks=", task_list)
     print(args.input_dir)
     print(node_list)
     print(task_list)
 
     job_list = []
-    # TODO: Wrap this all up inside of a "with redirectSTDout()" so we can capture standard out, populate job_list
-
-    # Some kind of doubly-nested for loop
-    #   Outer -- nodes, Inner -- tasks
+    
+    # Launch all of the requested jobs, capture the job number of each 
     for nodes in node_list:
         for ntasks in task_list:
-            # command line 
-            # spawn job with our particular commands 
             node_command = "--nodes=" + str(nodes)
             tasks_command = "--ntasks-per-node=" + str(ntasks)
             proc = subprocess.Popen(["sbatch",node_command, tasks_command, "./jxu_auto.sh"],stdout=subprocess.PIPE,cwd=input_dir)
             job_str = str(proc.communicate()[0])
-            print(job_str)
-            job_num = job_num = job_str.split(' ')[3].replace("\\n","").replace("'","")
+            job_num = job_str.split(' ')[3].replace("\n","").replace("'","").strip()
             job_list.append(job_num)
             
-    print(job_list)
-            
-            #TODO: get job number
-            
-
-            # We've submitted a slurm job with our particular commands
-            #   --> We need to know the job number, so we can get the timing info from that job we launched
-            # Idea: redirect stdout so we capture all the input that is being created from slurm about our job numbers, pass off job numbers to the module respondible for processing output
-
+    # At this point job_list is populated with the job numbers of all of our submitted jobs
+    # TODO: Make another python module that we pass off the job numbers to, and that actually parses our output files
             
 
 
