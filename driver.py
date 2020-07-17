@@ -25,7 +25,7 @@ def main(argv):
     if not node_list or not task_list:
         print("Error: One of the essential lists (node_list or task_list) were not provided. Please provide a list of values to proceed")
         exit(-1)
-    print("LAMMPS Simulation started with parameters: dir=", args.input_dir, "nodes list=", node_list, "tasks=", task_node_list)
+    print("LAMMPS Simulation started with parameters: dir=", args.input_dir, "nodes list=", node_list, "tasks=", task_list)
     print(args.input_dir)
     print(node_list)
     print(task_list)
@@ -41,7 +41,7 @@ def main(argv):
             # spawn job with our particular commands 
             node_command = "--nodes=" + str(nodes)
             tasks_command = "--ntasks-per-node=" + str(ntasks)
-            proc = subprocess.Popen(["sbatch",node_command, tasks_command, "./jxu_auto.sh"],stdout=subprocess.PIPE)
+            proc = subprocess.Popen(["sbatch",node_command, tasks_command, "./jxu_auto.sh"],stdout=subprocess.PIPE,cwd=input_dir)
             job_num = proc.communicate()[0]
             print(job_num)
             #TODO: get job number
