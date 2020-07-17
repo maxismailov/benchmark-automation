@@ -42,8 +42,10 @@ def main(argv):
             node_command = "--nodes=" + str(nodes)
             tasks_command = "--ntasks-per-node=" + str(ntasks)
             proc = subprocess.Popen(["sbatch",node_command, tasks_command, "./jxu_auto.sh"],stdout=subprocess.PIPE,cwd=input_dir)
-            job_num = proc.communicate()[0]
+            job_str = proc.communicate()[0]
+            job_num = job_num.split(' ')
             print(job_num)
+            
             #TODO: get job number
             
 
