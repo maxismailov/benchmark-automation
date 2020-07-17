@@ -6,7 +6,7 @@ export RUNMAX=1
 export OMPI_MCA_mtl_base_verbose=100
 
 
-cd $WORKDIR
+#cd $WORKDIR
 #export EXE=./lmp_spack_openmp
 export EXE=./lmp_mpi
 export OMP_NUM_THREADS=1
@@ -15,7 +15,7 @@ module load openmpi
 #module load intelmpi
 module load libfabric-aws
 
-echo "  Job '%j'"
+echo "  Job %j"
 echo "  LAMMPS Simulation on AWS started on `date +%H:%M:%S--%m/%d/%y`"
 echo "        Nodes: $SLURM_NODELIST"
 echo "        mpirun: `which mpirun`"
@@ -28,6 +28,7 @@ rm -rf log.lammps
 # patch alinux for a bug
 mpirun sudo bash -c 'echo 5128 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages'
 
+echo `pwd`
 for((RUN=1; RUN<=$RUNMAX; RUN++))
 do
         for TYPE in chain.scaled eam.scaled lj.scaled 
@@ -40,7 +41,7 @@ do
             mpirun $EXE -in in.$TYPE >& $TYPE.$CPU.$OMP_NUM_THREADS.$RUN.out
             line=`cat $TYPE.$CPU.$OMP_NUM_THREADS.$RUN.out | grep 'Loop time'` 
             echo "$line"
-            echo "\n"
+            echo ""
             sleep 5
         done
 	sleep 10
@@ -50,7 +51,7 @@ do
             mpirun -mca mtl_ofi_provider_exclude efa -mca mtl ^ofi $EXE -in in.$TYPE >& $TYPE.$CPU.$OMP_NUM_THREADS.$RUN.out
             line=`cat $TYPE.$CPU.$OMP_NUM_THREADS.$RUN.out | grep 'Loop time'` 
             echo "$line"
-            echo "\n"
+            echo ""
             sleep 5
         done
 done

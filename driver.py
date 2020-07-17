@@ -8,7 +8,7 @@ def parse_all_args():
     parser.add_argument("input_dir",help="Path to the directory that contains our lmp_mpi executable, bash script, and in.* files")
     parser.add_argument("--node_list",nargs="*",type=int,default=[])
     parser.add_argument("--task_list",nargs="*",type=int,default=[])
-    parser.add_argument("--out-_ile",type=str,default="")
+    parser.add_argument("--out_file",type=str,default="")
     #TODO: Make an option flag to possibly scale the size of the problem along with the number of clusters. Currently we keep the problem size the same always
     return parser.parse_args()
 
