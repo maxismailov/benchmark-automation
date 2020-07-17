@@ -8,10 +8,13 @@ def parse_all_args():
     parser.add_argument("input_dir",help="Path to the directory that contains our lmp_mpi executable, bash script, and in.* files")
     parser.add_argument("--node_list",nargs="*",type=int,default=[])
     parser.add_argument("--task_list",nargs="*",type=int,default=[])
-    parser.add_argument("--out_file",type=str,default="")
+    parser.add_argument("--out_file",type=str,default="",help="The name of the file that you want all of the timing data to be aggregated into")
     #TODO: Make an option flag to possibly scale the size of the problem along with the number of clusters. Currently we keep the problem size the same always
     return parser.parse_args()
 
+# TODO: - Figure out the %j thing (jobID) in get_perf_data.sh
+#   - Implement a parser to convert our aggregated timing file into tabular format
+#   - Do something about scaling. Currently we never scale the problem, and we will need to either scale the problem proportionally to the cluster, or not (which is what we currently do)
 
 def main(argv):
     # Get the core arguments necessary for this to run
@@ -54,8 +57,7 @@ def main(argv):
             job_num = job_str.split(' ')[3].replace("\\n","").replace("'","")
             job_list.append(job_num)
 
-    # At this point job_list is populated with the job numbers of all of our submitted jobs
-    # TODO: Make another python module that we pass off the job numbers to, and that actually parses our output files
+    # At this point we have all of the outputs being aggregated into our `out_file`
     
 
 
