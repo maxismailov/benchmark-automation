@@ -47,7 +47,7 @@ def main(argv):
             
     # At this point job_list is populated with the job numbers of all of our submitted jobs
     # TODO: Make another python module that we pass off the job numbers to, and that actually parses our output files
-    perfparser(job_list)
+    parse_jobs(job_list)
 
 
 if __name__ == "__main__":
