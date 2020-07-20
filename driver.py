@@ -60,16 +60,23 @@ def main(argv):
             node_command = "--nodes=" + str(nodes)
             tasks_command = "--ntasks-per-node=" + str(ntasks)
             # TODO: Add in a master aggregated file that all of our jobs will write into
-            proc = subprocess.Popen(["sbatch",node_command, tasks_command, "./get_perf_data.sh"],stdout=subprocess.PIPE,cwd=input_dir)
+            ticket = str(uuid.uuid1())
+            params_command = "--export=ALL,uuid="+ticket+"parse_dir="+os.getcwd()
+            proc = subprocess.Popen(["sbatch",node_command, tasks_command, params_command, "./get_perf_data.sh"],stdout=subprocess.PIPE,cwd=input_dir)
             job_str = str(proc.communicate()[0])
             job_num = job_str.split(' ')[3].replace("\\n","").replace("'","")
+            # Write to file <ticket, job_num>
             job_list.append(job_num)
+            temp_file_out.write(ticket + " " + job_num + "\n")
+            # temp_file_out.write(" ")
+            # temp_file_out.write(job_num)
+            # temp_file_out.write("\n")
 
     # At this point we have all of the outputs being aggregated into our `out_file`
     
-    for job in job_list:
-        temp_file_out.write(job)
-        temp_file_out.write("\n")
+    # for job in job_list:
+    #     temp_file_out.write(job)
+    #     temp_file_out.write("\n")
     
     # ret = subprocess.call(["mv", temp_file_out_name, "/tmp/"])
     # if ret != 0:
