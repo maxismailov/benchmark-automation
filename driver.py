@@ -48,7 +48,7 @@ def main(argv):
 
     # Make a temporary file in /tmp using some uuid, and in that file store the name of the master-out-file
     # Currently the schema for creating a new file is pretty lame...
-    temp_file_out_name = "temp-bench-auto.txt"
+    temp_file_out_name = "/tmp/temp-bench-auto.txt"
     temp_file_out = open(temp_file_out_name,"w")
     temp_file_out.write(out_file + "\n")
 
@@ -71,10 +71,10 @@ def main(argv):
         temp_file_out.write(job)
         temp_file_out.write("\n")
     
-    ret = subprocess.call(["cp", temp_file_out_name, "/tmp/"])
-    if ret != 0:
-        print("Error with copying temp file to /tmp")
-        exit(-1)
+    # ret = subprocess.call(["mv", temp_file_out_name, "/tmp/"])
+    # if ret != 0:
+    #     print("Error with copying temp file to /tmp")
+    #     exit(-1)
 
 
 if __name__ == "__main__":
