@@ -66,10 +66,10 @@ def main(argv):
             job_list.append(job_num)
 
     # At this point we have all of the outputs being aggregated into our `out_file`
-    temp_file_out.writelines(job_list)
     
-    # for job in job_list:
-    #     temp_file_out.write(job)
+    for job in job_list:
+        temp_file_out.write(job)
+        temp_file_out.write("\n")
     
     # ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
     # if ret != 0:
