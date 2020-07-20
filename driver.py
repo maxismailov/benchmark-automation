@@ -71,7 +71,7 @@ def main(argv):
         temp_file_out.write(job)
         temp_file_out.write("\n")
     
-    ret = subprocess.call(["cp", temp_file_out_name, "/tmp"])
+    ret = subprocess.call(["cp", temp_file_out_name, "/tmp/"])
     if ret != 0:
         print("Error with copying temp file to /tmp")
         exit(-1)
