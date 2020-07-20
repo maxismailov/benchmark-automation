@@ -49,7 +49,7 @@ def main(argv):
     # Make a temporary file in /tmp using some uuid, and in that file store the name of the master-out-file
     # Currently the schema for creating a new file is pretty lame...
     temp_file_out_name = "temp-bench-auto.txt"
-    temp_file_out = open(temp_file_out_name.int,"wx")
+    temp_file_out = open(temp_file_out_name,"w")
     temp_file_out.write(out_file)
     ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
     if ret != 0:
@@ -70,6 +70,7 @@ def main(argv):
             job_list.append(job_num)
 
     # At this point we have all of the outputs being aggregated into our `out_file`
-    temp_file_out.write(job_list)
+    for job in job_list:
+        temp_file_out.write(job)
 if __name__ == "__main__":
     main(sys.argv)
