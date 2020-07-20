@@ -2,6 +2,7 @@ import argparse
 import os
 import sys
 import subprocess
+import uuid
 
 def parse_all_args():
     parser = argparse.ArgumentParser()
@@ -17,6 +18,7 @@ def parse_all_args():
 #   - Do something about scaling. Currently we never scale the problem, and we will need to either scale the problem proportionally to the cluster, or not (which is what we currently do)
 #   - Add some nice print statements to the console so that things are more intelligible for the user
 #   - Fire off the parser at the very end of the job script, since all the data will be written after the loop!!!!!
+#   - Possibly include a setup script to install any package dependencies
 
 def main(argv):
     # Get the core arguments necessary for this to run
@@ -44,6 +46,16 @@ def main(argv):
         print("Error with copying over our execution script")
         exit(-1)
 
+    # Make a temporary file in /tmp using some uuid, and in that file store the name of the master-out-file
+    # Currently the schema for creating a new file is pretty lame...
+    temp_file_out_name = "temp-bench-auto.txt"
+    temp_file_out = file.open(temp_file_out_name.int,"wx")
+    temp_file_out.write(out_file)
+    ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
+    if ret != 0:
+        print("Error with copying temp file to /tmp")
+        exit(-1)
+
     job_list = []
     
     # Launch all of the requested jobs, capture the job number of each 
@@ -52,15 +64,12 @@ def main(argv):
             node_command = "--nodes=" + str(nodes)
             tasks_command = "--ntasks-per-node=" + str(ntasks)
             # TODO: Add in a master aggregated file that all of our jobs will write into
-            out_file_command = "--output="+out_file
-            file_mode_command = "--open-mode=append"
-            proc = subprocess.Popen(["sbatch",node_command, tasks_command, out_file_command, file_mode_command, "./get_perf_data.sh"],stdout=subprocess.PIPE,cwd=input_dir)
+            proc = subprocess.Popen(["sbatch",node_command, tasks_command, "./get_perf_data.sh"],stdout=subprocess.PIPE,cwd=input_dir)
             job_str = str(proc.communicate()[0])
             job_num = job_str.split(' ')[3].replace("\\n","").replace("'","")
             job_list.append(job_num)
 
     # At this point we have all of the outputs being aggregated into our `out_file`
-    # Maybe mark the end of the file in the script with some kind of EOF symbol and poll for that coming up?
-    
+    temp_file_out.write(job_list)
 if __name__ == "__main__":
     main(sys.argv)
