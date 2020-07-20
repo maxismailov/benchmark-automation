@@ -69,9 +69,11 @@ def main(argv):
     for job in job_list:
         temp_file_out.write(job)
     
-    ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
-    if ret != 0:
-        print("Error with copying temp file to /tmp")
-        exit(-1)
+    # ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
+    # if ret != 0:
+    #     print("Error with copying temp file to /tmp")
+    #     exit(-1)
+
+    
 if __name__ == "__main__":
     main(sys.argv)
