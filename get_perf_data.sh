@@ -55,6 +55,9 @@ do
             sleep 5
         done
 done
+
+# We should just fire off the parser at this point in the script since the job will be done!
+
 echo  "     LAMMPS Simulation on AWS done on `date +%H:%M:%S--%m/%d/%y`"
 echo  "----------------------------------------------------------------"
 

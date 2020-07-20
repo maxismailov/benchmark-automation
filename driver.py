@@ -59,8 +59,5 @@ def main(argv):
 
     # At this point we have all of the outputs being aggregated into our `out_file`
     
-
-
-
 if __name__ == "__main__":
     main(sys.argv)
