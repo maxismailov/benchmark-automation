@@ -51,10 +51,6 @@ def main(argv):
     temp_file_out_name = "temp-bench-auto.txt"
     temp_file_out = open(temp_file_out_name,"w")
     temp_file_out.write(out_file)
-    ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
-    if ret != 0:
-        print("Error with copying temp file to /tmp")
-        exit(-1)
 
     job_list = []
     
@@ -72,5 +68,10 @@ def main(argv):
     # At this point we have all of the outputs being aggregated into our `out_file`
     for job in job_list:
         temp_file_out.write(job)
+    
+    ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
+    if ret != 0:
+        print("Error with copying temp file to /tmp")
+        exit(-1)
 if __name__ == "__main__":
     main(sys.argv)
