@@ -15,6 +15,8 @@ def parse_all_args():
 # TODO: - Figure out the %j thing (jobID) in get_perf_data.sh
 #   - Implement a parser to convert our aggregated timing file into tabular format
 #   - Do something about scaling. Currently we never scale the problem, and we will need to either scale the problem proportionally to the cluster, or not (which is what we currently do)
+#   - Add some nice print statements to the console so that things are more intelligible for the user
+#   - Fire off the parser at the very end of the job script, since all the data will be written after the loop!!!!!
 
 def main(argv):
     # Get the core arguments necessary for this to run
@@ -58,6 +60,7 @@ def main(argv):
             job_list.append(job_num)
 
     # At this point we have all of the outputs being aggregated into our `out_file`
+    # Maybe mark the end of the file in the script with some kind of EOF symbol and poll for that coming up?
     
 if __name__ == "__main__":
     main(sys.argv)
