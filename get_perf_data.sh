@@ -28,6 +28,8 @@ rm -rf log.lammps
 # patch alinux for a bug
 mpirun sudo bash -c 'echo 5128 > /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages'
 
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+
 for((RUN=1; RUN<=$RUNMAX; RUN++))
 do
         for TYPE in chain.scaled eam.scaled lj.scaled 
@@ -54,6 +56,8 @@ do
             sleep 5
         done
 done
+
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 # Maybe make this conditional on whether or not python has already been installed
 #sudo yum install -y python3
