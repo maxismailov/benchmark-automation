@@ -22,7 +22,7 @@ echo "        mpirun: `which mpirun`"
 echo "        EXE: `which $EXE`"
 echo "        #Threads: $OMP_NUM_THREADS" 
 echo "        UUID: $uuid "
-
+echo "	      working_dir: $parse_dir "	
 #remove previous output files (if present)
 rm -rf log.lammps
 
@@ -57,7 +57,8 @@ do
         done
 done
 
-python3 $working_dir/perfparser.py $uuid
+sudo yum install -y python3
+python3 $parse_dir/perfparser.py $uuid
 # We should just fire off the parser at this point in the script since the job will be done!
 
 echo  "     LAMMPS Simulation on AWS done on `date +%H:%M:%S--%m/%d/%y`"

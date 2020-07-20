@@ -61,7 +61,7 @@ def main(argv):
             tasks_command = "--ntasks-per-node=" + str(ntasks)
             # TODO: Add in a master aggregated file that all of our jobs will write into
             ticket = str(uuid.uuid1())
-            params_command = "--export=ALL,uuid="+ticket+"parse_dir="+os.getcwd()
+            params_command = "--export=ALL,uuid="+ticket+",parse_dir="+os.getcwd()
             proc = subprocess.Popen(["sbatch",node_command, tasks_command, params_command, "./get_perf_data.sh"],stdout=subprocess.PIPE,cwd=input_dir)
             job_str = str(proc.communicate()[0])
             job_num = job_str.split(' ')[3].replace("\\n","").replace("'","")
