@@ -49,7 +49,7 @@ def main(argv):
     # Make a temporary file in /tmp using some uuid, and in that file store the name of the master-out-file
     # Currently the schema for creating a new file is pretty lame...
     temp_file_out_name = "temp-bench-auto.txt"
-    temp_file_out = file.open(temp_file_out_name.int,"wx")
+    temp_file_out = open(temp_file_out_name.int,"wx")
     temp_file_out.write(out_file)
     ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
     if ret != 0:
