@@ -71,10 +71,10 @@ def main(argv):
         temp_file_out.write(job)
         temp_file_out.write("\n")
     
-    # ret = subprocess.call(["mv", temp_file_out_name, "/tmp"])
-    # if ret != 0:
-    #     print("Error with copying temp file to /tmp")
-    #     exit(-1)
+    ret = subprocess.call(["cp", temp_file_out_name, "/tmp"])
+    if ret != 0:
+        print("Error with copying temp file to /tmp")
+        exit(-1)
 
 
 if __name__ == "__main__":
