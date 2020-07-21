@@ -1,3 +1,10 @@
+import os
+import sys
+import subprocess
+import asyncio
+import csv
+import numpy as np
+
 # perfparser.py
 # Authors: Max Ismailov, Caleb Grode
 # Description: This file is a script which gets information from our custom slurm-XXX.out files. 
@@ -10,19 +17,6 @@
 
 
 # TODO: Write data to master CSV file --> probably where we would need to write lock
-
-
-import os
-
-import sys
-
-import subprocess
-
-import asyncio
-
-import csv
-
-import numpy as np
 
 
 # Possibly use portalocker package if we need to implement locks
