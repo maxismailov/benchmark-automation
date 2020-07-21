@@ -1,4 +1,5 @@
 #!/bin/bash
+# Shell script which runs chain, eam, and lj lammps simulations with and without EFA
 
 CPU=$SLURM_NTASKS
 export RUNMAX=1
