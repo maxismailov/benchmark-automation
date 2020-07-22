@@ -24,15 +24,13 @@ def main(argv):
     # Get the job file from the uuid given as argv[1]
     ticket = argv[1]
 
-    # We will eventually want to make this a non hardcoded-value
-
-    temp_file = open("/software/benchmarks/utah/AWS-EBS-c5n.18xlarge-EFA/temp-bench-auto.txt","r")
+    # TODO: We will eventually want to make this a non hardcoded-value
+    temp_file = open("/software/benchmarks/utah/AWS-EBS-c5n.18xlarge-EFA/.temp-bench-auto.txt","r")
     
 
-    # Find the job number from the uuid we were given
+    # Find the job number from the uuid we were given, and open it
     job_num = -1
     out_file_name = ""
-
     for line in temp_file:
         if not out_file_name:
             out_file_name = line
@@ -40,9 +38,7 @@ def main(argv):
         if tokens[0] == ticket:
             job_num = int(tokens[1])
             break
-    
-    print("I am uuid: ", ticket , " and my job number is: ", job_num)
-        
+            
     job_file_name = "slurm-"+str(job_num)+".out"
     job_file = open(job_file_name,"r")
 
@@ -56,32 +52,29 @@ def main(argv):
         index_line += 1
         if line.count("~") != 0:
             break
-
-    print("First line index: ", index_line , " First line: " , slurm_out_lines[index_line] , "\n")
     
     # At this point index_line will be set to the begining of the relevant data
-    # *** Schema for tabular_data:
+    # Schema for tabular_data:
     #   Nodes, Tasks, Atoms, Type, Time, Has_EFA, Steps, Iteration, Job ID
 
     # Sets up the header for our tabular_data
     tabular_data = np.empty((1,9),dtype='object') 
-    tabular_data[0,:] = ["Nodes", "Tasks", "Atoms", "Type", "Time", "Has_EFA", "Steps", "Iteration", "Job_ID"]
     new_row = np.empty((1,9),dtype='object')
-    tabular_data = np.append(tabular_data, new_row,axis=0)
-    index_data = 1
+    index_data = 0
     nodes = slurm_out_lines[1].count(",") + 1 
-    print(slurm_out_lines[index_line].split())
     ntasks = slurm_out_lines[index_line].split()[6] 
     index_line += 1
     num_atoms = slurm_out_lines[index_line].split()[11] 
 
-
-    index_line -= 1 # move back up before we start the while loop
+    # move back up before we start the while loop
+    index_line -= 1 
 
     # The '~' character is the sentinel character for the end of our run
     while slurm_out_lines[index_line].count("~") == 0: 
        # Constants for all runs: num_nodes, num_tasks, num_atoms, job id
-        print("Current line: ", slurm_out_lines[index_line])
+        tabular_data = np.append(tabular_data, new_row, axis = 0)
+        
+        # Insert constant values
         tabular_data[index_data,0] = nodes 
         tabular_data[index_data,1] = ntasks 
         tabular_data[index_data,2] = num_atoms 
@@ -101,19 +94,18 @@ def main(argv):
         print(tabular_data)
         print("###################")
         new_row = np.empty((1,9),dtype='object')
-
-        tabular_data = np.append(tabular_data, new_row, axis = 0)
         
         # Increment row pointer and line pointer 
         index_data += 1 
-        index_line += 2 # move to next simulation
+        index_line += 2 
 
-    #dbg_file = open("debug-slurm-"+job_num+".out")
+    # A hacky way to get rid of an unnecessary line...
+    tabular_data = np.delete(tabular_data,index_data,0)
 
-    np.savetxt(out_file_name, tabular_data, delimiter=",") 
-    # Actually write this data out to our master file
-    # with open(out_file_name, 'wb') as master_file:
-    #     np.savetxt(master_file, tabular_data, delimiter=",") 
+    # Write our current jobs data to this specific output file
+    with open(out_file_name, "ab") as out_file:
+        np.savetxt(out_file, tabular_data, delimiter=",", fmt="%s", header = "Nodes,Tasks,Atoms,Type,Time,Has_EFA,Steps,Iteration,Job_ID", comments="")
+        
 
 if __name__ == "__main__":
     main(sys.argv)
