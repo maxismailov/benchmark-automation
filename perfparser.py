@@ -53,7 +53,9 @@ def main(argv):
     tabular_data = np.empty((1,9),dtype='object') 
     new_row = np.empty((1,9),dtype='object')
     index_data = 0
-    nodes = (slurm_out_lines[1][slurm_out_lines[1].find("["):].count(",") + 1) + (0 if slurm_out_lines[1][slurm_out_lines[1].find("["):].count("-")==0 else slurm_out_lines[1][slurm_out_lines[1].find("["):].count("-") + 1)
+    # In the slurm out file, nodes are separated by ',' and '-'. If we count the number of occurances and add 1, we get the number of nodes
+    nodes = slurm_out_lines[1][slurm_out_lines[1].find("["):].count(",") + slurm_out_lines[1][slurm_out_lines[1].find("["):].count("-") + 1
+    # Parse data which remains constant for this job
     ntasks = slurm_out_lines[index_line].split()[6] 
     index_line += 1
     num_atoms = slurm_out_lines[index_line].split()[11] 
