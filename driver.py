@@ -4,13 +4,22 @@ import sys
 import subprocess
 import uuid
 
+# Authors: Max Ismailov and Caleb Grode
+# Description: A script to launch a series of slurm jobs with various numbers of nodes and ntasks 
+#              Creates a file that associates spawned jobs with their job number, so that the subsequent
+#              spawned job can parse its output file. 
+#
+
+
+
 def parse_all_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("input_dir",help="Path to the directory that contains our lmp_mpi executable, bash script, and in.* files")
     parser.add_argument("--node_list",nargs="*",type=int,default=[])
     parser.add_argument("--task_list",nargs="*",type=int,default=[])
     parser.add_argument("--out_file",type=str,default="",help="The name of the file that you want all of the timing data to be aggregated into")
-    #TODO: Make an option flag to scale the size of the problem along with the number of clusters. something like --size [x y z]
+    # TODO: Make an option flag to scale the size of the problem along with the number of clusters. something like --size [x y z]. Also number_iterations
+    # TODO: Add the option to choose output file format: csv, tsv 
     return parser.parse_args()
 
 # TODO: 

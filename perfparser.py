@@ -4,9 +4,8 @@ import subprocess
 import csv
 import numpy as np
 
-# perfparser.py
 # Authors: Max Ismailov, Caleb Grode
-# Description: This file is a script which gets information from our custom slurm-XXX.out files. 
+# Description: A script which gets information from the job's associated slurm-XXX.out files. 
 #              Taking in a uuid as an input, script searches for the slurm-XXX.out file with the matching uuid
 #              and grabs data from the lammps simulations.
 #              Collected data: Nodes, Tasks, Atoms, Type, Time, Has_EFA, Steps, Iteration, Job ID
@@ -14,19 +13,12 @@ import numpy as np
 # 
 # File Dependencies: perfparser.py is fired from the shell script get_perf_data.sh after it finishes the lammps simulations
 
-
-# TODO: Write data to master CSV file --> probably where we would need to write lock
-# - WE NEED TO INCLUDE A SETUP.PY TO INSTALL ALL DEPENDENCIES
-
-
-# Possibly use portalocker package if we need to implement locks
 def main(argv):
     # Get the job file from the uuid given as argv[1]
     ticket = argv[1]
 
     # TODO: We will eventually want to make this a non hardcoded-value
     temp_file = open("/software/benchmarks/utah/AWS-EBS-c5n.18xlarge-EFA/.temp-bench-auto.txt","r")
-    
 
     # Find the job number from the uuid we were given, and open it
     job_num = -1
@@ -61,7 +53,7 @@ def main(argv):
     tabular_data = np.empty((1,9),dtype='object') 
     new_row = np.empty((1,9),dtype='object')
     index_data = 0
-    nodes = slurm_out_lines[1].count(",") + 1 
+    nodes = (slurm_out_lines[1][slurm_out_lines[1].find("["):].count(",") + 1) + (0 if slurm_out_lines[1][slurm_out_lines[1].find("["):].count("-")==0 else slurm_out_lines[1][slurm_out_lines[1].find("["):].count("-") + 1)
     ntasks = slurm_out_lines[index_line].split()[6] 
     index_line += 1
     num_atoms = slurm_out_lines[index_line].split()[11] 
@@ -91,8 +83,6 @@ def main(argv):
         tabular_data[index_data,4] = slurm_out_lines[index_line].split()[3] 
         tabular_data[index_data,6] = slurm_out_lines[index_line].split()[8] 
 
-        print(tabular_data)
-        print("###################")
         new_row = np.empty((1,9),dtype='object')
         
         # Increment row pointer and line pointer 
