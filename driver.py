@@ -63,10 +63,7 @@ def main(argv):
     seq_max_str = "seq_max="+sequence[1]
     ticket = str(uuid.uuid1())
     ticket_str = "uuid="+ticket
-    # foo = subprocess.call(["export",seq_curr_str])
-    # foo = subprocess.call(["export",seq_max_str])
-    # foo = subprocess.call(["export",ticket_str])
-    
+   
     job_filename = "gpu_"+str(gpu_num)+"_"+str(sequence[0])+".out"
     job_file = open(job_filename,"w")
     temp_file_out.write(ticket + " " + job_filename+ "\n")

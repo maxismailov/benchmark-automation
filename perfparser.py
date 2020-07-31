@@ -13,27 +13,15 @@ import numpy as np
 # 
 # File Dependencies: perfparser.py is fired from the shell script get_perf_data.sh after it finishes the lammps simulations
 
-def main(argv):
-    # Get the job file from the uuid given as argv[1]
-    ticket = argv[1]
+def parse_out_file(filename):
 
     # TODO: We will eventually want to make this a non hardcoded-value
-    temp_file = open("/software/benchmarks/utah/AWS-EBS-c5n.18xlarge-EFA/.temp-bench-auto.txt","r")
-
-    # Find the job number from the uuid we were given, and open it
-    job_num = -1
-    out_file_name = ""
-    for line in temp_file:
-        if not out_file_name:
-            out_file_name = line
-        tokens = line.split()
-        if tokens[0] == ticket:
-            job_num = int(tokens[1])
-            break
+    temp_file = open("/mnt/efs/in-files/.temp-bench-auto.txt","r")
             
-    job_file_name = "slurm-"+str(job_num)+".out"
-    job_file = open(job_file_name,"r")
+    
+    job_file = open(filename,"r")
 
+    #TODO: Replace job_file with whatever our output file is!
     slurm_out_lines = []
     for line in job_file:
         slurm_out_lines.append(line)
@@ -45,6 +33,9 @@ def main(argv):
         if line.count("~") != 0:
             break
     
+    # TODO: Make these indices work!!!!!!!! They generate indexOutOfBounds exceptions!!
+    # - Get the MPI Procs to actually show up
+
     # At this point index_line will be set to the begining of the relevant data
     # Schema for tabular_data:
     #   Nodes, Tasks, Atoms, Type, Time, Has_EFA, Steps, Iteration, Job ID
@@ -99,8 +90,8 @@ def main(argv):
         np.savetxt(out_file, tabular_data, delimiter=",", fmt="%s", header = "Nodes,Tasks,Atoms,Type,Time,Has_EFA,Steps,Iteration,Job_ID", comments="")
         
 
-if __name__ == "__main__":
-    main(sys.argv)
+# if __name__ == "__main__":
+#     main(sys.argv)
 
 
         
