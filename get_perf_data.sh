@@ -2,7 +2,7 @@
 # Shell script which runs chain, eam, and lj lammps simulations with and without EFA
 
 CPU=$SLURM_NTASKS
-export RUNMAX=1
+export RUNMAX=3
 #export WORKDIR=/software/benchmarks/utah/AWS-EBS-c5n.18xlarge-EFA
 export OMPI_MCA_mtl_base_verbose=100
 
@@ -23,6 +23,9 @@ echo "        EXE: `which $EXE`"
 echo "        #Threads: $OMP_NUM_THREADS" 
 echo "        UUID: $uuid "
 echo "        working_dir: $parse_dir "	
+echo "        curr_seq: $seq_curr"
+echo "        end_seq: $seq_max"
+echo "        current_dir: `pwd`"
 #remove previous output files (if present)
 rm -rf log.lammps
 
@@ -60,10 +63,15 @@ done
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-# Maybe make this conditional on whether or not python has already been installed
-#sudo yum install -y python3
-#python3 $parse_dir/perfparser.py $uuid
-# We should just fire off the parser at this point in the script since the job will be done!
+# TODO: Include a setup script!
+sudo yum install -y python3
+sudo python3 -m pip install numpy
+python3 $parse_dir/perfparser.py $uuid 
+
+if [ $seq_curr -gt 0 ]
+then
+    python3 $parse_dir/driver.py `pwd` --task_sequence $seq_curr,$seq_max --out_file $seq_curr-single-node-seq.csv
+fi
 
 echo  "     LAMMPS Simulation on AWS done on `date +%H:%M:%S--%m/%d/%y`"
 echo  "----------------------------------------------------------------"
