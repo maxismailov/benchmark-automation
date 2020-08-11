@@ -11,14 +11,19 @@ import numpy as np
 #              Collected data: Nodes, Tasks, Atoms, Type, Time, Has_EFA, Steps, Iteration, Job ID
 #              Data is stored in tabular format using a 2d array.
 # 
-# File Dependencies: perfparser.py is fired from the shell script get_perf_data.sh after it finishes the lammps simulations
+# perfparser.py is fired from the shell script get_perf_data.sh after it finishes the lammps simulations
+#
+# Cluster support: This version of perfparser.py parses data for slurm output files. If you are looking to parse
+#                  data from the output of a GPU run, switch to the 'gpu' branch and rerun the automation scripts
+
 
 def main(argv):
     # Get the job file from the uuid given as argv[1]
     ticket = argv[1]
+    input_dir = argv[2]
 
-    # TODO: We will eventually want to make this a non hardcoded-value
-    temp_file = open("/software/benchmarks/utah/AWS-EBS-c5n.18xlarge-EFA/.temp-bench-auto.txt","r")
+    temp_file_path = input_dir+".temp-bench-auto.txt"
+    temp_file = open(temp_file_path,"r")
 
     # Find the job number from the uuid we were given, and open it
     job_num = -1
@@ -53,18 +58,17 @@ def main(argv):
     tabular_data = np.empty((1,9),dtype='object') 
     new_row = np.empty((1,9),dtype='object')
     index_data = 0
-    # In the slurm out file, nodes are separated by ',' and '-'. If we count the number of occurances and add 1, we get the number of nodes
+
+    # Get the number of nodes from the slurm.out file with a simple fencepost calculation
     nodes = slurm_out_lines[1][slurm_out_lines[1].find("["):].count(",") + slurm_out_lines[1][slurm_out_lines[1].find("["):].count("-") + 1
-    # Parse data which remains constant for this job
     ntasks = slurm_out_lines[index_line].split()[6] 
     index_line += 1
     num_atoms = slurm_out_lines[index_line].split()[11] 
-
-    # move back up before we start the while loop
     index_line -= 1 
 
     # The '~' character is the sentinel character for the end of our run
     while slurm_out_lines[index_line].count("~") == 0: 
+
        # Constants for all runs: num_nodes, num_tasks, num_atoms, job id
         tabular_data = np.append(tabular_data, new_row, axis = 0)
         
@@ -86,15 +90,13 @@ def main(argv):
         tabular_data[index_data,6] = slurm_out_lines[index_line].split()[8] 
 
         new_row = np.empty((1,9),dtype='object')
-        
-        # Increment row pointer and line pointer 
         index_data += 1 
         index_line += 2 
 
     # A hacky way to get rid of an unnecessary line...
     tabular_data = np.delete(tabular_data,index_data,0)
 
-    # Write our current jobs data to this specific output file
+    # Write our current jobs' data to this specific output file
     with open(out_file_name, "ab") as out_file:
         np.savetxt(out_file, tabular_data, delimiter=",", fmt="%s", header = "Nodes,Tasks,Atoms,Type,Time,Has_EFA,Steps,Iteration,Job_ID", comments="")
         

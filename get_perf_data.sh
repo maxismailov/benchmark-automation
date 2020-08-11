@@ -23,6 +23,7 @@ echo "        EXE: `which $EXE`"
 echo "        #Threads: $OMP_NUM_THREADS" 
 echo "        UUID: $uuid "
 echo "        working_dir: $parse_dir "	
+echo "        input_dir: $input_dir"
 echo "        curr_seq: $seq_curr"
 echo "        end_seq: $seq_max"
 echo "        current_dir: `pwd`"
@@ -63,14 +64,13 @@ done
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-# TODO: Include a setup script!
 sudo yum install -y python3
 sudo python3 -m pip install numpy
-python3 $parse_dir/perfparser.py $uuid 
+python3 $parse_dir/perfparser.py $uuid $input_dir
 
 if [ $seq_curr -gt 0 ]
 then
-    python3 $parse_dir/driver.py `pwd` --task_sequence $seq_curr,$seq_max --out_file $seq_curr-single-node-seq.csv
+    python3 $parse_dir/driver.py `pwd` --task_sequence $seq_curr,$seq_max --out_file $seq_curr-single-node-seq.csv --parse_dir $parse_dir
 fi
 
 echo  "     LAMMPS Simulation on AWS done on `date +%H:%M:%S--%m/%d/%y`"
