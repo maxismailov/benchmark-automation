@@ -15,10 +15,6 @@ import numpy as np
 
 def parse_out_file(filename):
 
-    # TODO: We will eventually want to make this a non hardcoded-value
-    temp_file = open("/mnt/efs/in-files/.temp-bench-auto.txt","r")
-            
-    
     job_file = open(filename,"r")
 
     #TODO: Replace job_file with whatever our output file is!
@@ -32,9 +28,6 @@ def parse_out_file(filename):
         index_line += 1
         if line.count("~") != 0:
             break
-    
-    # TODO: Make these indices work!!!!!!!! They generate indexOutOfBounds exceptions!!
-    # - Get the MPI Procs to actually show up
 
     # At this point index_line will be set to the begining of the relevant data
     # Schema for tabular_data:
@@ -44,14 +37,13 @@ def parse_out_file(filename):
     tabular_data = np.empty((1,9),dtype='object') 
     new_row = np.empty((1,9),dtype='object')
     index_data = 0
-    # In the slurm out file, nodes are separated by ',' and '-'. If we count the number of occurances and add 1, we get the number of nodes
+    
+    # Simple fencepost calculation to obtain the number of nodes 
     nodes = slurm_out_lines[1][slurm_out_lines[1].find("["):].count(",") + slurm_out_lines[1][slurm_out_lines[1].find("["):].count("-") + 1
     # Parse data which remains constant for this job
     ntasks = slurm_out_lines[index_line].split()[6] 
     index_line += 1
     num_atoms = slurm_out_lines[index_line].split()[11] 
-
-    # move back up before we start the while loop
     index_line -= 1 
 
     # The '~' character is the sentinel character for the end of our run
@@ -77,21 +69,15 @@ def parse_out_file(filename):
         tabular_data[index_data,6] = slurm_out_lines[index_line].split()[8] 
 
         new_row = np.empty((1,9),dtype='object')
-        
-        # Increment row pointer and line pointer 
         index_data += 1 
         index_line += 2 
 
-    # A hacky way to get rid of an unnecessary line...
     tabular_data = np.delete(tabular_data,index_data,0)
 
     # Write our current jobs data to this specific output file
     with open(out_file_name, "ab") as out_file:
         np.savetxt(out_file, tabular_data, delimiter=",", fmt="%s", header = "Nodes,Tasks,Atoms,Type,Time,Has_EFA,Steps,Iteration,Job_ID", comments="")
-        
 
-# if __name__ == "__main__":
-#     main(sys.argv)
 
 
         

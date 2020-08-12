@@ -21,10 +21,7 @@ echo "        Nodes: $SLURM_NODELIST"
 echo "        mpirun: `which mpirun`"
 echo "        EXE: `which $EXE`"
 echo "        #Threads: $OMP_NUM_THREADS" 
-echo "        UUID: $3 "
 echo "        working_dir: $parse_dir "	
-echo "        curr_seq: $4"
-echo "        end_seq: $5"
 echo "        current_dir: `pwd`"
 #remove previous output files (if present)
 rm -rf log.lammps
