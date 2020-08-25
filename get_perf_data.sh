@@ -3,17 +3,13 @@
 
 CPU=$SLURM_NTASKS
 export RUNMAX=3
-#export WORKDIR=/software/benchmarks/utah/AWS-EBS-c5n.18xlarge-EFA
 export OMPI_MCA_mtl_base_verbose=100
 
 
-#cd $WORKDIR
-#export EXE=./lmp_spack_openmp
 export EXE=./lmp_master_gpu
 export OMP_NUM_THREADS=1
 module purge
 module load openmpi
-#module load intelmpi
 module load libfabric-aws
 
 echo "  LAMMPS Simulation on AWS started on `date +%H:%M:%S--%m/%d/%y`"
@@ -60,15 +56,6 @@ done
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-# TODO: Include a setup script!
-# sudo yum install -y python3
-# sudo python3 -m pip install numpy
-# python3 $parse_dir/perfparser.py $uuid 
-
-# if [ $seq_curr -gt 0 ]
-# then
-#     python3 $parse_dir/driver.py `pwd` --task_sequence $seq_curr,$seq_max --out_file $seq_curr-single-node-seq.csv
-# fi
 
 echo  "     LAMMPS Simulation on AWS done on `date +%H:%M:%S--%m/%d/%y`"
 echo  "----------------------------------------------------------------"

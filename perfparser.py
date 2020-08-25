@@ -12,6 +12,11 @@ import numpy as np
 #              Data is stored in tabular format using a 2d array.
 # 
 # File Dependencies: perfparser.py is fired from the shell script get_perf_data.sh after it finishes the lammps simulations
+#
+#
+# GPU Support: This version of perfparser.py is designed to parse GPU instance outputs. If you're looking to run this on an
+#              AWS ParallelCluster grab the "cluster_automation.zip" file
+
 
 def parse_out_file(filename):
 

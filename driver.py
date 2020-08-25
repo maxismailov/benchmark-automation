@@ -5,9 +5,13 @@ import subprocess
 import perfparser
 
 # Authors: Max Ismailov and Caleb Grode
-# Description: A script to launch a series of slurm jobs with various numbers of nodes and ntasks 
+# Description: A script to launch a series of LAMMPS jobs with various numbers of nodes and ntasks 
 #              Creates a file that associates spawned jobs with their job number, so that the subsequent
 #              spawned job can parse its output file. 
+#
+#
+# GPU Support: This version of the scripts is designed for automation support on a single GPU instance.
+#              If you are looking for automation support for a cluster, grab the "cluster_automation.zip" file
 #
 
 
